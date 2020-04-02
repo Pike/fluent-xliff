@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 from compare_locales.paths import TOMLParser, ProjectFiles
 
@@ -13,7 +14,7 @@ def get_config(toml_path):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("toml")
-    p.add_argument("dest")
+    p.add_argument("dest", type=Path)
     p.add_argument("--kind", choices=["simple"], default="simple")
     args = p.parse_args()
     config = get_config(args.toml)

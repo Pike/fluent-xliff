@@ -33,7 +33,7 @@ class XLIFFer:
             file_elem.text = "\n  "
             self.file(file_elem, ref, l10n, locale)
             previous = file_elem
-        ET.dump(root)
+        return ET.tostring(root)
 
     def file(self, parent, ref, l10n, locale):
         if not os.path.isfile(ref):
