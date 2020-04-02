@@ -1,0 +1,17 @@
+basepath = "."
+
+locales = [
+    "de",
+    "pl",
+]
+
+[[paths]]
+    reference = "en/common.ftl"
+    l10n = "{locale}/common.ftl"
+
+[[paths]]
+    reference = "en/main.ftl"
+    l10n = "{locale}/main.ftl"
+    locales = [
+        "de",
+    ]
