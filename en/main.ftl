@@ -5,7 +5,7 @@ welcome-hello-world = Hello, world!
 welcome-hello-user = Hello, {$userName}!
 welcome-about = Welcome to {-product-name} by {-brand-name}.
 
-## Notifiactions
+## Notifications
 
 # $count (Number) - The count of unread notifications.
 notifications-unread = You have {$count ->
