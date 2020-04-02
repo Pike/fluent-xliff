@@ -40,6 +40,14 @@ class XLIFFer:
             return
         with open(ref) as fh:
             ref_entries = parse(fh.read(), with_spans=False).body
+        l10n_entries = {}
+        if os.path.isfile(l10n):
+            with open(l10n) as fh:
+                l10n_entries = {
+                    ("-" if isinstance(e, ast.Term) else "") + e.id.name: e
+                    for e in parse(fh.read(), with_spans=False).body
+                    if isinstance(e, (ast.Message, ast.Term))
+                }
         root = parent
         indent = 1
         group_id = 1
@@ -59,10 +67,9 @@ class XLIFFer:
                 note = ET.SubElement(notes, f"{{{xmlns}}}note")
                 note.text = entry.content
             elif isinstance(entry, (ast.Message, ast.Term)):
-                prefix = "-" if isinstance(entry, ast.Term) else ""
-                unit = ET.SubElement(
-                    parent, f"{{{xmlns}}}unit", {"id": prefix + entry.id.name}
-                )
+                entry_id = "-" if isinstance(entry, ast.Term) else ""
+                entry_id += entry.id.name
+                unit = ET.SubElement(parent, f"{{{xmlns}}}unit", {"id": entry_id})
                 unit.text = "\n" + (indent + 1) * "  "
                 unit.tail = "\n" + indent * "  "
                 if entry.comment:
@@ -73,8 +80,18 @@ class XLIFFer:
                 segment = ET.SubElement(unit, f"{{{xmlns}}}segment")
                 segment.tail = segment.text = "\n" + (indent + 1) * "  "
                 source = ET.SubElement(segment, f"{{{xmlns}}}source")
+                source.tail = "\n" + (indent + 1) * "  "
                 content = serializer.serialize_pattern(entry.value)
                 # serialize_pattern prefixes inline patterns with " ", which we don't want
-                if content[0] ==  " ":
+                if content[0] == " ":
                     content = content[1:]
                 source.text = content
+                if entry_id not in l10n_entries:
+                    continue
+                target = ET.SubElement(segment, f"{{{xmlns}}}target")
+                target.tail = "\n" + (indent + 1) * "  "
+                content = serializer.serialize_pattern(l10n_entries[entry_id].value)
+                # serialize_pattern prefixes inline patterns with " ", which we don't want
+                if content[0] == " ":
+                    content = content[1:]
+                target.text = content
