@@ -2,7 +2,7 @@
 
 welcome-hello-world = Witaj, świecie!
 
-## Notifiactions
+## Notifications
 
 # $count (Number) - The count of new notifications.
 notifications-new = {$count ->
